@@ -335,12 +335,15 @@
   var selectedEmoji = EMOJIS[0];
 
   function seed() {
-    var now = Date.now();
     return [
-      { id: uid(), title: "AI 记账小工具", url: "https://example.com/budget", desc: "拍照识别发票自动归类，生成月度报表。", tags: ["工具", "效率"], emoji: "📊", createdAt: now - 3000 },
-      { id: uid(), title: "个人简历生成器", url: "https://example.com/resume", desc: "根据经历一键生成可下载的精美简历页。", tags: ["AI", "文档"], emoji: "📝", createdAt: now - 2000 },
-      { id: uid(), title: "配色灵感板", url: "https://example.com/colors", desc: "输入关键词生成高级感配色方案。", tags: ["设计", "AI"], emoji: "🎨", createdAt: now - 1000 },
-      { id: uid(), title: "习惯打卡器", url: "https://example.com/habit", desc: "极简习惯追踪，带连续天数激励。", tags: ["效率", "工具"], emoji: "⚡", createdAt: now }
+      { id: uid(), title: "多链接处理工具", url: "https://cerulean-liger-dbf9f8.netlify.app/", desc: "批量打开与管理多个链接的实用工具。", tags: ["效率"], emoji: "🔗", createdAt: new Date("2026-06-20").getTime() },
+      { id: uid(), title: "处理结算Id", url: "https://adorable-souffle-169912.netlify.app/excel-processor.html", desc: "结算 ID 批量处理工具。", tags: ["效率"], emoji: "🧾", createdAt: new Date("2026-06-25").getTime() },
+      { id: uid(), title: "国务院项目企业调查匹配", url: "https://stellar-cupcake-d8a05e.netlify.app/", desc: "项目与企业调查数据匹配工具。", tags: ["工具"], emoji: "🏛️", createdAt: new Date("2026-05-18").getTime() },
+      { id: uid(), title: "武道燃脂", url: "https://resonant-kleicha-cf99ed.netlify.app/", desc: "武道主题燃脂训练应用。", tags: ["娱乐"], emoji: "🥋", createdAt: new Date("2026-04-10").getTime() },
+      { id: uid(), title: "神谕占卜", url: "https://hilarious-custard-e825ff.netlify.app/", desc: "神谕主题占卜小应用。", tags: ["娱乐"], emoji: "🔮", createdAt: new Date("2026-03-22").getTime() },
+      { id: uid(), title: "抽样系统2", url: "https://fluffy-gumption-b507ab.netlify.app/", desc: "数据抽样系统。", tags: ["工具"], emoji: "🎲", createdAt: new Date("2026-06-02").getTime() },
+      { id: uid(), title: "个人财务系统", url: "https://glittery-meerkat-abc19e.netlify.app/", desc: "个人财务管理应用。", tags: ["工具"], emoji: "💰", createdAt: new Date("2026-07-01").getTime() },
+      { id: uid(), title: "居家减脂", url: "https://nimble-lebkuchen-c45474.netlify.app/", desc: "居家减脂训练应用。", tags: ["居家"], emoji: "🏠", createdAt: new Date("2026-02-15").getTime() }
     ];
   }
   function load() {
