@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>作品集 · 我的 AI 网页应用</title>
+<meta name="description" content="集中展示我用 AI 生成的网页应用" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #f6f9fc;
+    --surface: #ffffff;
+    --border: #e5edf5;
+    --border-strong: #d6dce5;
+    --text: #061b31;
+    --text-soft: #64748d;
+    --text-faint: #8a98ab;
+    --accent: #533afd;
+    --accent-hover: #4434d4;
+    --accent-soft: #f1effe;
+    --accent-line: #b9b9f9;
+    --danger: #ea2261;
+    --heading: #061b31;
+    --shadow: rgba(50,50,93,0.25) 0px 30px 45px -30px, rgba(0,0,0,0.1) 0px 18px 36px -18px;
+    --shadow-sm: rgba(50,50,93,0.10) 0px 12px 24px -16px, rgba(0,0,0,0.06) 0px 6px 12px -8px;
+    --radius: 6px;
+    --radius-sm: 4px;
+  }
+  [data-theme="dark"] {
+    --bg: #0d253d;
+    --bg-soft: #0a1d31;
+    --surface: #12203a;
+    --border: #25395a;
+    --border-strong: #324a70;
+    --text: #f4f8fc;
+    --text-soft: #9fb0c9;
+    --text-faint: #6b7f99;
+    --accent: #7d77ff;
+    --accent-hover: #938eff;
+    --accent-soft: rgba(125,119,255,0.16);
+    --accent-line: rgba(125,119,255,0.5);
+    --danger: #ff6b9d;
+    --heading: #f4f8fc;
+    --shadow: rgba(3,3,39,0.5) 0px 30px 45px -30px, rgba(0,0,0,0.4) 0px 18px 36px -18px;
+    --shadow-sm: rgba(0,0,0,0.35) 0px 12px 24px -16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", system-ui, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.55;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    font-feature-settings: "tnum";
+  }
+  body::before {
+    content: ""; position: fixed; top: -160px; right: -120px; width: 520px; height: 520px;
+    background: radial-gradient(circle at center, rgba(83,58,253,0.08), rgba(249,107,238,0.04) 45%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  .accent-bar { height: 3px; width: 100%; background: linear-gradient(90deg, #533afd 0%, #665efd 35%, #f96bee 70%, #ea2261 100%); }
+  a { color: var(--accent); text-decoration: none; }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+  /* ---------- Header ---------- */
+  header.site {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav { max-width: 1100px; margin: 0 auto; padding: 13px 28px; display: flex; align-items: center; gap: 12px; }
+  .brand { font-weight: 500; font-size: 15px; letter-spacing: -0.01em; color: var(--heading); display: flex; align-items: center; gap: 9px; }
+  .brand .dot { width: 22px; height: 22px; border-radius: var(--radius-sm); background: var(--accent); color: #fff; display: grid; place-items: center; font-size: 13px; }
+  .nav-spacer { flex: 1; }
+  .nav-actions { display: flex; align-items: center; gap: 8px; }
+
+  .btn {
+    font: inherit; font-size: 14px; font-weight: 400;
+    border: 1px solid var(--border-strong); background: var(--surface); color: var(--text);
+    padding: 8px 14px; border-radius: var(--radius-sm); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  .btn:hover { background: var(--bg-soft); }
+  .btn:active { transform: scale(0.98); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn.ghost { color: var(--accent); border-color: var(--accent-line); background: transparent; }
+  .btn.ghost:hover { background: var(--accent-soft); }
+  .btn.icon { padding: 8px; width: 38px; height: 38px; justify-content: center; }
+  .btn.sm { padding: 7px 12px; font-size: 13px; }
+
+  /* ---------- Hero — compact for desktop ---------- */
+  .hero { padding: 36px 0 20px; display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; }
+  .hero-text { flex: 1; min-width: 0; }
+  .eyebrow {
+    display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 3px 10px; border-radius: 999px; margin-bottom: 12px;
+    border: 1px solid var(--accent-line);
+  }
+  .hero h1 {
+    font-size: 32px; font-weight: 300; letter-spacing: -0.8px; line-height: 1.15;
+    color: var(--heading); margin-bottom: 8px;
+  }
+  .hero p { font-size: 15px; font-weight: 300; color: var(--text-soft); line-height: 1.5; }
+  .stats { display: flex; gap: 32px; flex-shrink: 0; padding-bottom: 4px; }
+  .stat .num { font-size: 26px; font-weight: 300; letter-spacing: -0.4px; color: var(--heading); }
+  .stat .lbl { font-size: 12px; color: var(--text-faint); }
+
+  /* ---------- Controls ---------- */
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 4px 0 16px; }
+  .search { flex: 1; min-width: 240px; position: relative; }
+  .search input {
+    width: 100%; font: inherit; font-size: 14px; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border-strong);
+    padding: 9px 12px 9px 38px; border-radius: var(--radius-sm); outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--text-faint); }
+
+  /* ---------- Single continuous grid with inline headers ---------- */
+  .flow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+    padding-bottom: 48px;
+  }
+  /* Group header spans all columns in the grid */
+  .group-header {
+    grid-column: 1 / -1;
+    display: flex; align-items: baseline; gap: 10px;
+    margin-top: 8px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .group-header:first-child { margin-top: 0; }
+  .group-header h2 { font-size: 19px; font-weight: 300; letter-spacing: -0.3px; color: var(--heading); }
+  .group-count { font-size: 12px; color: var(--text-faint); font-feature-settings: "tnum"; }
+
+  /* ---------- Card ---------- */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 18px; display: flex; flex-direction: column; gap: 12px;
+    transition: border-color 0.18s ease, box-shadow 0.22s ease, transform 0.18s ease;
+  }
+  .card:hover { border-color: var(--accent-line); box-shadow: var(--shadow); transform: translateY(-3px); }
+  .card .head { display: flex; align-items: center; gap: 12px; }
+  .avatar {
+    width: 40px; height: 40px; flex: none; border-radius: var(--radius);
+    background: var(--accent-soft); color: var(--accent);
+    display: grid; place-items: center; font-size: 18px;
+  }
+  .card h3 { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: var(--heading); flex: 1; }
+  .card .desc { font-size: 13px; color: var(--text-soft); line-height: 1.5; }
+  .card .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 11px; color: var(--text-soft); background: var(--bg-soft); border: 1px solid var(--border); padding: 2px 9px; border-radius: var(--radius-sm); }
+  .card .meta { font-size: 11px; color: var(--text-faint); font-feature-settings: "tnum"; }
+  .card .row { display: flex; align-items: center; gap: 8px; }
+  .card .visit {
+    flex: 1; text-align: center; font-size: 13px; font-weight: 400;
+    background: var(--accent); color: #fff; padding: 8px; border-radius: var(--radius-sm);
+    border: 1px solid var(--accent); transition: background 0.15s ease;
+  }
+  .card .visit:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .card .manage { display: flex; gap: 6px; opacity: 0; transition: opacity 0.15s ease; }
+  .card:hover .manage, .card:focus-within .manage { opacity: 1; }
+  .card .iconbtn {
+    width: 33px; height: 33px; display: grid; place-items: center; cursor: pointer;
+    border: 1px solid var(--border-strong); background: var(--surface); color: var(--text-soft);
+    border-radius: var(--radius-sm); transition: all 0.15s ease;
+  }
+  .card .iconbtn:hover { color: var(--heading); border-color: var(--accent-line); }
+  .card .iconbtn.danger:hover { color: var(--danger); border-color: var(--danger); }
+
+  .empty { grid-column: 1 / -1; text-align: center; padding: 56px 20px; color: var(--text-faint); }
+  .empty h3 { color: var(--text-soft); font-weight: 500; font-size: 17px; margin: 8px 0 4px; }
+  .empty p { font-size: 14px; }
+
+  /* ---------- Modal ---------- */
+  .overlay {
+    position: fixed; inset: 0; z-index: 100; background: rgba(6,27,49,0.45);
+    backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    width: 100%; max-width: 480px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 26px; max-height: 90vh; overflow-y: auto;
+    box-shadow: var(--shadow); position: relative; z-index: 1;
+  }
+  .modal h2 { font-size: 22px; font-weight: 300; letter-spacing: -0.4px; color: var(--heading); margin-bottom: 4px; }
+  .modal .sub { font-size: 14px; color: var(--text-faint); margin-bottom: 20px; }
+  .field { margin-bottom: 15px; }
+  .field label { display: block; font-size: 13px; font-weight: 500; color: var(--text-soft); margin-bottom: 7px; }
+  .field input, .field textarea {
+    width: 100%; font: inherit; font-size: 14px; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border-strong);
+    padding: 10px 12px; border-radius: var(--radius-sm); outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field textarea { resize: vertical; min-height: 72px; }
+  .field input:focus, .field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .field .hint { font-size: 12px; color: var(--text-faint); margin-top: 5px; }
+  .field .err { font-size: 12px; color: var(--danger); margin-top: 5px; display: none; }
+  .field.invalid input { border-color: var(--danger); }
+  .field.invalid .err { display: block; }
+  .emoji-row { display: flex; gap: 7px; flex-wrap: wrap; }
+  .emoji-pick {
+    width: 40px; height: 40px; border-radius: var(--radius-sm); cursor: pointer; font-size: 18px;
+    display: grid; place-items: center; border: 1px solid var(--border-strong); background: var(--bg-soft);
+  }
+  .emoji-pick.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
+  .modal-actions .btn { flex: 1; justify-content: center; }
+
+  /* ---------- Toast ---------- */
+  .toasts { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .toast { background: var(--heading); color: #fff; font-size: 13px; padding: 11px 18px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); }
+
+  footer.site { text-align: center; padding: 28px 0 44px; color: var(--text-faint); font-size: 13px; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+  footer.site a { font-weight: 500; }
+
+  @media (max-width: 600px) {
+    .flow-grid { grid-template-columns: 1fr; }
+    .btn .label { display: none; }
+    .hero { flex-direction: column; align-items: flex-start; padding: 32px 0 20px; }
+    .hero h1 { font-size: 28px; letter-spacing: -0.6px; }
+    .stats { gap: 24px; margin-top: 4px; }
+    .card .manage { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto !important; }
+    .card:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="accent-bar"></div>
+  <header class="site">
+    <nav class="nav">
+      <div class="brand"><span class="dot">◆</span>作品集</div>
+      <div class="nav-spacer"></div>
+      <div class="nav-actions">
+        <button class="btn icon" id="themeBtn" title="切换主题" aria-label="切换主题">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <button class="btn ghost sm" id="importBtn" title="导入备份">📥 <span class="label">导入</span></button>
+        <button class="btn ghost sm" id="exportBtn" title="导出备份">📤 <span class="label">导出</span></button>
+        <button class="btn primary" id="addBtn">＋ <span class="label">添加作品</span></button>
+        <input type="file" id="importFile" accept="application/json" hidden />
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-text">
+        <span class="eyebrow">AI 作品集</span>
+        <h1>我的 AI 网页应用</h1>
+        <p>把分散在各处的 AI 网页作品集中展示，数据存在浏览器本地。</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="num" id="statCount">0</div><div class="lbl">件作品</div></div>
+        <div class="stat"><div class="num" id="statTags">0</div><div class="lbl">个标签</div></div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" placeholder="搜索名称、描述或标签…" />
+      </div>
+    </div>
+    <div class="flow-grid" id="grid"></div>
+  </main>
+
+  <footer class="site">
+    单文件作品集 · 数据存于本地浏览器 · <a href="#" id="resetLink">重置示例数据</a>
+  </footer>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2 id="modalTitle">添加作品</h2>
+      <p class="sub">填写信息后保存，作品会出现在上面的网格中。</p>
+      <form id="workForm" novalidate>
+        <input type="hidden" id="f_id" />
+        <div class="field" id="f_title_wrap">
+          <label for="f_title">作品名称 *</label>
+          <input type="text" id="f_title" maxlength="60" placeholder="例如：AI 记账小工具" />
+          <div class="err">请填写作品名称</div>
+        </div>
+        <div class="field" id="f_url_wrap">
+          <label for="f_url">访问链接 *</label>
+          <input type="text" id="f_url" placeholder="https://example.com" />
+          <div class="err">请填写有效的网址（以 http 开头）</div>
+          <div class="hint">会以新标签页打开</div>
+        </div>
+        <div class="field">
+          <label for="f_desc">一句话简介</label>
+          <textarea id="f_desc" maxlength="200" placeholder="这个应用是做什么的？"></textarea>
+        </div>
+        <div class="field">
+          <label for="f_tags">标签（用逗号分隔）</label>
+          <input type="text" id="f_tags" placeholder="工具, 效率, AI" />
+        </div>
+        <div class="field">
+          <label>选个图标</label>
+          <div class="emoji-row" id="emojiRow"></div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn ghost" id="cancelBtn">取消</button>
+          <button type="submit" class="btn primary" id="saveBtn">保存作品</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "ai_works_v1";
+  var THEME_KEY = "ai_works_theme";
+  var EMOJIS = ["🚀", "🛠️", "🎨", "📊", "🤖", "💡", "📝", "🎮", "🌐", "🔧", "📱", "✨", "🧠", "📈", "🗂️", "⚡"];
+
+  var works = [];
+  var query = "";
+  var selectedEmoji = EMOJIS[0];
+
+  function seed() {
+    var now = Date.now();
+    return [
+      { id: uid(), title: "AI 记账小工具", url: "https://example.com/budget", desc: "拍照识别发票自动归类，生成月度报表。", tags: ["工具", "效率"], emoji: "📊", createdAt: now - 3000 },
+      { id: uid(), title: "个人简历生成器", url: "https://example.com/resume", desc: "根据经历一键生成可下载的精美简历页。", tags: ["AI", "文档"], emoji: "📝", createdAt: now - 2000 },
+      { id: uid(), title: "配色灵感板", url: "https://example.com/colors", desc: "输入关键词生成高级感配色方案。", tags: ["设计", "AI"], emoji: "🎨", createdAt: now - 1000 },
+      { id: uid(), title: "习惯打卡器", url: "https://example.com/habit", desc: "极简习惯追踪，带连续天数激励。", tags: ["效率", "工具"], emoji: "⚡", createdAt: now }
+    ];
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return seed();
+      var arr = JSON.parse(raw);
+      return Array.isArray(arr) && arr.length ? arr : seed();
+    } catch (e) { return seed(); }
+  }
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(works)); } catch (e) {}
+  }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  function applyTheme(t) {
+    document.documentElement.setAttribute("data-theme", t);
+    document.getElementById("themeIcon").textContent = t === "dark" ? "☀️" : "🌙";
+    try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+  }
+  function initTheme() {
+    var saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+    if (!saved) saved = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    applyTheme(saved);
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function normalizeUrl(u) {
+    u = (u || "").trim();
+    if (!u) return "";
+    if (!/^https?:\/\//i.test(u)) u = "https://" + u;
+    return u;
+  }
+  function avatarOf(w) {
+    if (w.emoji) return w.emoji;
+    return (w.title || "?").charAt(0);
+  }
+
+  function toast(msg) {
+    var box = document.getElementById("toasts");
+    var el = document.createElement("div");
+    el.className = "toast";
+    el.textContent = msg;
+    box.appendChild(el);
+    setTimeout(function () { el.remove(); }, 2200);
+  }
+
+  function allTags() {
+    var set = {};
+    works.forEach(function (w) { (w.tags || []).forEach(function (t) { set[t] = 1; }); });
+    return Object.keys(set);
+  }
+  function formatDate(ts) {
+    var d = new Date(ts || Date.now());
+    return d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0"+d.getDate()).slice(-2);
+  }
+  function searchFiltered() {
+    var q = query.trim().toLowerCase();
+    if (!q) return works.slice();
+    return works.filter(function (w) {
+      var hay = (w.title + " " + (w.desc || "") + " " + (w.tags || []).join(" ")).toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+  }
+  function groupByTag(list) {
+    var groups = {};
+    list.forEach(function (w) {
+      var key = (w.tags && w.tags.length) ? w.tags[0] : "未分类";
+      (groups[key] = groups[key] || []).push(w);
+    });
+    var keys = Object.keys(groups).sort(function (a, b) {
+      if (a === "未分类") return 1;
+      if (b === "未分类") return -1;
+      var d = groups[b].length - groups[a].length;
+      return d !== 0 ? d : a.localeCompare(b, "zh");
+    });
+    return keys.map(function (k) { return { tag: k, items: groups[k] }; });
+  }
+
+  /* ---- render: single continuous grid with inline headers ---- */
+  function renderGrid() {
+    var grid = document.getElementById("grid");
+    var list = searchFiltered();
+    grid.innerHTML = "";
+    if (!list.length) {
+      var e = document.createElement("div");
+      e.className = "empty";
+      e.innerHTML = "<h3>" + (works.length ? "没有匹配的作品" : "还没有作品") + "</h3><p>" +
+        (works.length ? "换个关键词试试。" : "点击右上角「添加作品」开始记录你的第一个 AI 应用吧。") + "</p>";
+      grid.appendChild(e);
+    } else {
+      groupByTag(list).forEach(function (g) {
+        // header spans all columns
+        var head = document.createElement("div");
+        head.className = "group-header";
+        head.innerHTML = "<h2>" + esc(g.tag) + "</h2><span class=\"group-count\">" + g.items.length + "</span>";
+        grid.appendChild(head);
+        // cards flow naturally into remaining slots
+        g.items.slice().sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); })
+          .forEach(function (w) { grid.appendChild(card(w)); });
+      });
+    }
+    document.getElementById("statCount").textContent = works.length;
+    document.getElementById("statTags").textContent = allTags().length;
+  }
+
+  function card(w) {
+    var el = document.createElement("article");
+    el.className = "card";
+    var tagsHtml = (w.tags || []).map(function (t) { return '<span class="tag">' + esc(t) + "</span>"; }).join("");
+    el.innerHTML =
+      '<div class="head">' +
+        '<div class="avatar">' + esc(avatarOf(w)) + "</div>" +
+        "<h3>" + esc(w.title) + "</h3>" +
+      "</div>" +
+      (w.desc ? '<div class="desc">' + esc(w.desc) + "</div>" : '<div class="desc" style="color:var(--text-faint)">暂无简介</div>') +
+      (tagsHtml ? '<div class="tags">' + tagsHtml + "</div>" : "") +
+      '<div class="meta">创建于 ' + formatDate(w.createdAt) + '</div>' +
+      '<div class="row">' +
+        '<a class="visit" href="' + esc(normalizeUrl(w.url)) + '" target="_blank" rel="noopener">访问 ↗</a>' +
+        '<div class="manage">' +
+          '<button class="iconbtn" data-act="edit" title="编辑" aria-label="编辑">✏️</button>' +
+          '<button class="iconbtn danger" data-act="del" title="删除" aria-label="删除">🗑️</button>' +
+        "</div>" +
+      "</div>";
+    el.querySelector('[data-act="edit"]').onclick = function () { openModal(w); };
+    el.querySelector('[data-act="del"]').onclick = function () { removeWork(w, el); };
+    return el;
+  }
+
+  function buildEmojiRow() {
+    var row = document.getElementById("emojiRow");
+    row.innerHTML = "";
+    EMOJIS.forEach(function (em) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "emoji-pick" + (em === selectedEmoji ? " active" : "");
+      b.textContent = em;
+      b.onclick = function () {
+        selectedEmoji = em;
+        row.querySelectorAll(".emoji-pick").forEach(function (x) { x.classList.remove("active"); });
+        b.classList.add("active");
+      };
+      row.appendChild(b);
+    });
+  }
+  function openModal(item) {
+    var isEdit = !!item;
+    document.getElementById("modalTitle").textContent = isEdit ? "编辑作品" : "添加作品";
+    document.getElementById("saveBtn").textContent = isEdit ? "保存修改" : "保存作品";
+    document.getElementById("f_id").value = isEdit ? item.id : "";
+    document.getElementById("f_title").value = isEdit ? item.title : "";
+    document.getElementById("f_url").value = isEdit ? item.url : "";
+    document.getElementById("f_desc").value = isEdit ? (item.desc || "") : "";
+    document.getElementById("f_tags").value = isEdit ? (item.tags || []).join(", ") : "";
+    selectedEmoji = isEdit && item.emoji ? item.emoji : EMOJIS[0];
+    buildEmojiRow();
+    clearErrors();
+    document.getElementById("overlay").classList.add("open");
+    setTimeout(function () { document.getElementById("f_title").focus(); }, 60);
+  }
+  function closeModal() { document.getElementById("overlay").classList.remove("open"); }
+  function clearErrors() {
+    ["f_title_wrap", "f_url_wrap"].forEach(function (id) { document.getElementById(id).classList.remove("invalid"); });
+  }
+  function submitForm(e) {
+    e.preventDefault();
+    clearErrors();
+    var id = document.getElementById("f_id").value;
+    var title = document.getElementById("f_title").value.trim();
+    var url = document.getElementById("f_url").value.trim();
+    var desc = document.getElementById("f_desc").value.trim();
+    var tags = document.getElementById("f_tags").value.split(",").map(function (t) { return t.trim(); }).filter(Boolean);
+    var ok = true;
+    if (!title) { document.getElementById("f_title_wrap").classList.add("invalid"); ok = false; }
+    if (!/^https?:\/\/.+/i.test(normalizeUrl(url))) { document.getElementById("f_url_wrap").classList.add("invalid"); ok = false; }
+    if (!ok) return;
+
+    if (id) {
+      var w = works.find(function (x) { return x.id === id; });
+      if (w) { w.title = title; w.url = normalizeUrl(url); w.desc = desc; w.tags = tags; w.emoji = selectedEmoji; }
+      toast("已保存修改");
+    } else {
+      works.push({ id: uid(), title: title, url: normalizeUrl(url), desc: desc, tags: tags, emoji: selectedEmoji, createdAt: Date.now() });
+      toast("已添加作品");
+    }
+    save();
+    closeModal();
+    renderGrid();
+  }
+
+  function removeWork(w, el) {
+    if (!confirm('确定删除「' + w.title + '」吗？此操作不可撤销。')) return;
+    works = works.filter(function (x) { return x.id !== w.id; });
+    save();
+    renderGrid();
+    toast("已删除");
+  }
+
+  function exportData() {
+    var blob = new Blob([JSON.stringify(works, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "my-ai-works-" + new Date().toISOString().slice(0, 10) + ".json";
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    toast("已导出备份");
+  }
+  function importData(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var arr = JSON.parse(reader.result);
+        if (!Array.isArray(arr)) throw new Error("格式错误");
+        var clean = arr.filter(function (x) { return x && x.title && x.url; }).map(function (x) {
+          return { id: x.id || uid(), title: x.title, url: normalizeUrl(x.url), desc: x.desc || "", tags: x.tags || [], emoji: x.emoji || EMOJIS[0], createdAt: x.createdAt || Date.now() };
+        });
+        works = clean;
+        save();
+        renderGrid();
+        toast("已导入 " + clean.length + " 件作品");
+      } catch (e) { toast("导入失败：文件格式不正确"); }
+    };
+    reader.readAsText(file);
+  }
+
+  function init() {
+    initTheme();
+    works = load();
+    renderGrid();
+
+    document.getElementById("addBtn").onclick = function () { openModal(null); };
+    document.getElementById("cancelBtn").onclick = closeModal;
+    document.getElementById("workForm").onsubmit = submitForm;
+    document.getElementById("overlay").addEventListener("click", function (e) {
+      if (e.target === this) closeModal();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeModal();
+    });
+    document.getElementById("themeBtn").onclick = function () {
+      var cur = document.documentElement.getAttribute("data-theme");
+      applyTheme(cur === "dark" ? "light" : "dark");
+    };
+    document.getElementById("exportBtn").onclick = exportData;
+    document.getElementById("importBtn").onclick = function () { document.getElementById("importFile").click(); };
+    document.getElementById("importFile").onchange = function (e) {
+      if (e.target.files[0]) importData(e.target.files[0]);
+      e.target.value = "";
+    };
+    document.getElementById("searchInput").oninput = function (e) { query = e.target.value; renderGrid(); };
+    document.getElementById("resetLink").onclick = function (e) {
+      e.preventDefault();
+      if (confirm("重置为示例数据？你当前的作品将被示例覆盖。")) {
+        works = seed(); save(); query = "";
+        document.getElementById("searchInput").value = "";
+        renderGrid(); toast("已重置为示例数据");
+      }
+    };
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+</body>
+</html>

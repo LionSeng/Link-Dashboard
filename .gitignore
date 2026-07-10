@@ -1,0 +1,6 @@
+# WorkBuddy 本地记忆 / 代理文件（含私人数据，不要提交）
+.workbuddy/
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
